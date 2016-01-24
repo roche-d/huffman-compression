@@ -5,12 +5,14 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Sun Jan 24 04:54:25 2016 Clément Roche
+// Last update Sun Jan 24 07:31:29 2016 Clément Roche
 //
 
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include "HCTree.hpp"
 
 int	main(int ac, char **av) {
    if (ac < 3)
@@ -33,8 +35,15 @@ int	main(int ac, char **av) {
 	 return -1;
       }
       in.seekg(0, std::ios_base::beg);
-
+      char nextChar;
+      std::vector<int> freq(256, 0);
+      while (in.get(nextChar)) {
+	 ++freq[(int)nextChar];
+      }
       in.close();
+
+      HCTree tree;
+      tree.build(freq);
    }
    return 0;
 }

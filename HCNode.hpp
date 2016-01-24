@@ -10,7 +10,10 @@ using namespace std;
 /** A class, instances of which are nodes in an HCTree.
  */
 class HCNode {
-  friend bool comp(HCNode* one, HCNode* other);
+   /*
+   friend bool comp(HCNode* one, HCNode* other) {
+      return one->count < other->count;
+      }*/
 
 public:
   int count;
@@ -30,7 +33,9 @@ public:
    *  We want small counts to have high priority.
    *  And we want to break ties deterministically.
    */
-  bool operator<(const HCNode& other);
+   bool operator<(const HCNode& other) const {
+      return count > other.count;
+   }
 };
 
 /** For printing an HCNode to an ostream
@@ -43,6 +48,5 @@ ostream& operator<<(ostream& stm, const HCNode& n) {
 }
 
 bool comp(HCNode* one, HCNode* other);
-
 
 #endif // HCNODE_HPP
