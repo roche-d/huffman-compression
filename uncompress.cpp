@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Mon Jan 25 03:52:06 2016 Clément Roche
+// Last update Mon Jan 25 04:11:24 2016 Clément Roche
 //
 
 #include <iostream>
@@ -14,7 +14,7 @@
 #include <vector>
 #include "HCTree.hpp"
 
-static bool checkValidInputFile(std::ifstream &in) {
+static bool checkValidInputFile(std::ifstream &in, const char *out) {
    if (!in.is_open()) {
       std::cout << "Invalid input file." << std::endl;
       return true;
@@ -22,7 +22,10 @@ static bool checkValidInputFile(std::ifstream &in) {
    in.seekg(0, std::ios_base::end);
    unsigned int len = in.tellg();
    if (!len) {
-      std::cout << "The file is empty." << std::endl;
+      std::cout << "Warning: The file is empty (output still created)." << std::endl;
+      std::ofstream emptyout;
+      emptyout.open(out, std::ios::binary | std::ios::trunc);
+      emptyout.close();
       return true;
    }
    if (len < 512) {
@@ -41,7 +44,7 @@ int	main(int ac, char **av) {
       std::ifstream in;
       in.open(av[1], std::ios::binary);
 
-      if (checkValidInputFile(in))
+      if (checkValidInputFile(in, av[2]))
 	 return -1;
 
       //int nextByte;
