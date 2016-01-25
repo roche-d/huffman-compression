@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Mon Jan 25 03:02:09 2016 Clément Roche
+// Last update Mon Jan 25 03:28:30 2016 Clément Roche
 //
 
 #include <iostream>
@@ -51,7 +51,6 @@ int	main(int ac, char **av) {
       while (i < 256 && !headerFailed) {
 	 in.read((char *)&nextByte, sizeof(nextByte));
 	 if (nextByte) {
-	    std::cout << i << " : " << nextByte << std::endl;
 	    freq[i] = nextByte;
 	 }
 	 ++i;
@@ -61,34 +60,20 @@ int	main(int ac, char **av) {
       HCTree tree;
       tree.build(freq);
 
-      in.close();
-
-      return -1;
-
-      char nextChar;
-
-
-
+      // Prepare the output
       std::ofstream out;
       out.open(av[2], std::ios::binary | std::ios::trunc);
       if (!out.is_open()) {
 	 std::cout << "Invalid output file." << std::endl;
 	 return -1;
       }
-      // We write the header (just frequencies for each character on 4 bytes)
-      for (auto i:freq) {
-	 int val = i;
-	 out.write((char *)&val, sizeof(val));
+
+      int decoded;
+      while ((decoded = tree.decode(in))) {
+	 out << (char)decoded;
       }
-      // We reopen the input to encode
-      in.open(av[1], std::ios::binary);
-      if (checkValidInputFile(in))
-	 return -1;
-      while (in.get(nextChar)) {
-	 tree.encode((byte) nextChar, out);
-      }
-      out.close();
       in.close();
+      out.close();
    }
    return 0;
 }

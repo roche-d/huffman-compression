@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:18:23 2016 Clément Roche
-// Last update Mon Jan 25 02:47:17 2016 Clément Roche
+// Last update Mon Jan 25 03:29:44 2016 Clément Roche
 //
 
 #include <queue>
@@ -18,6 +18,7 @@ void HCTree::build(const vector<int> &freqs) {
    std::priority_queue<HCNode *, std::vector<HCNode *>, HCNodePtrComp> queue;
    byte b = 0;
 
+   // Push all the leaves in vector but also in the priority queue
    for (auto i:freqs) {
       if (i) {
 	 leaves[(int) b] = new HCNode(i, b);
@@ -26,8 +27,7 @@ void HCTree::build(const vector<int> &freqs) {
       ++b;
    }
 
-   std::cout << "size: " << queue.size() << std::endl;
-   std::cout << *queue.top() << std::endl;
+   // We build the tree
    while (queue.size() > 1)
    {
       HCNode *left, *right;
@@ -40,13 +40,6 @@ void HCTree::build(const vector<int> &freqs) {
    }
    root = queue.top();
    assignParent(root);
-   std::cout << "final tree " << *queue.top() << " left " << *(queue.top()->c0) << std::endl;
-
-   for (auto i:leaves) {
-      if (i) {
-	 std::cout << "leaf " << *i << " parent is " << *i->p << std::endl;
-      }
-   }
 }
 
 void HCTree::assignParent(HCNode *node) {
@@ -70,7 +63,6 @@ void HCTree::encode(byte symbol, ofstream &out) const {
    if (leaf) {
       std::string enc = "";
       getEncodedSymbol(enc, leaf);
-      //std::cout << "symbol for " << (char)symbol << " is " << enc << std::endl;
       out << enc;
    }
 }
@@ -83,4 +75,25 @@ void HCTree::getEncodedSymbol(std::string &enc, HCNode *leaf) const {
       enc += "0";
    else if (leaf->p && leaf->p->c1 == leaf)
       enc += "1";
+}
+
+void HCTree::getDecodedSymbol(int &dec, ifstream &in, HCNode *leaf) const {
+   if (!leaf)
+      return ;
+   if (!leaf->c0 && !leaf->c1) {
+      dec = leaf->symbol;
+      return ;
+   }
+   char nextChar;
+   in.get(nextChar);
+   if (nextChar == '0')
+      getDecodedSymbol(dec, in, leaf->c0);
+   else if (nextChar == '1')
+      getDecodedSymbol(dec, in, leaf->c1);
+}
+
+int HCTree::decode(ifstream &in) const {
+   int dec = 0;
+   getDecodedSymbol(dec, in, root);
+   return dec;
 }

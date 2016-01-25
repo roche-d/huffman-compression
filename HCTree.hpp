@@ -33,6 +33,7 @@ private:
 
    void assignParent(HCNode *);
    void getEncodedSymbol(std::string &, HCNode *) const;
+   void getDecodedSymbol(int &, ifstream &, HCNode *) const;
 
 public:
     explicit HCTree() : root(0) {
