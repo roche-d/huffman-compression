@@ -1,11 +1,11 @@
 //
-// compress.cpp for pa2 in /home/roched/Projects/cse100/repo_st_632_3786_10821_pa2_huffman
+// uncompress.cpp for pa2 in /home/roched/Projects/cse100/repo_st_632_3786_10821_pa2_huffman
 // 
 // Made by Clément Roche
 // Login   <roche_d@epitech.net>
 // 
-// Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Mon Jan 25 02:48:25 2016 Clément Roche
+// Started on  Mon Jan 25 02:48:04 2016 Clément Roche
+// Last update Mon Jan 25 03:02:09 2016 Clément Roche
 //
 
 #include <iostream>
@@ -25,13 +25,17 @@ static bool checkValidInputFile(std::ifstream &in) {
       std::cout << "The file is empty." << std::endl;
       return true;
    }
+   if (len < 1024) {
+      std::cout << "The header is corrupted." << std::endl;
+      return true;
+   }
    in.seekg(0, std::ios_base::beg);
    return false;
 }
 
 int	main(int ac, char **av) {
    if (ac < 3)
-      std::cout << "Usage: ./compress infile outfile" << std::endl;
+      std::cout << "Usage: ./uncompress infile outfile" << std::endl;
    else {
 
       std::ifstream in;
@@ -40,15 +44,30 @@ int	main(int ac, char **av) {
       if (checkValidInputFile(in))
 	 return -1;
 
-      char nextChar;
+      int nextByte;
       std::vector<int> freq(256, 0);
-      while (in.get(nextChar)) {
-	 ++freq[(int)nextChar];
+      int i = 0;
+      bool headerFailed = false;
+      while (i < 256 && !headerFailed) {
+	 in.read((char *)&nextByte, sizeof(nextByte));
+	 if (nextByte) {
+	    std::cout << i << " : " << nextByte << std::endl;
+	    freq[i] = nextByte;
+	 }
+	 ++i;
       }
-      in.close();
 
+      // We build the tree
       HCTree tree;
       tree.build(freq);
+
+      in.close();
+
+      return -1;
+
+      char nextChar;
+
+
 
       std::ofstream out;
       out.open(av[2], std::ios::binary | std::ios::trunc);

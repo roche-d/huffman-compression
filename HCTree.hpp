@@ -31,6 +31,9 @@ private:
     HCNode* root;
     vector<HCNode*> leaves;
 
+   void assignParent(HCNode *);
+   void getEncodedSymbol(std::string &, HCNode *) const;
+
 public:
     explicit HCTree() : root(0) {
         leaves = vector<HCNode*>(256, (HCNode*) 0);
