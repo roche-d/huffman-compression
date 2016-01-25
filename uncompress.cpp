@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Mon Jan 25 03:28:30 2016 Clément Roche
+// Last update Mon Jan 25 03:52:06 2016 Clément Roche
 //
 
 #include <iostream>
@@ -25,7 +25,7 @@ static bool checkValidInputFile(std::ifstream &in) {
       std::cout << "The file is empty." << std::endl;
       return true;
    }
-   if (len < 1024) {
+   if (len < 512) {
       std::cout << "The header is corrupted." << std::endl;
       return true;
    }
@@ -44,17 +44,24 @@ int	main(int ac, char **av) {
       if (checkValidInputFile(in))
 	 return -1;
 
-      int nextByte;
+      //int nextByte;
       std::vector<int> freq(256, 0);
       int i = 0;
-      bool headerFailed = false;
-      while (i < 256 && !headerFailed) {
-	 in.read((char *)&nextByte, sizeof(nextByte));
+      while (i < 256) {
+	 /*in.read((char *)&nextByte, sizeof(nextByte));
 	 if (nextByte) {
 	    freq[i] = nextByte;
-	 }
+	    }*/
+
+	 // Stupid header
+	 int frequency;
+	 in >> frequency;
+	 if (frequency)
+	    freq[i] = frequency;
 	 ++i;
       }
+      // \n
+      in.get();
 
       // We build the tree
       HCTree tree;

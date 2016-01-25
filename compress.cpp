@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Mon Jan 25 02:48:25 2016 Clément Roche
+// Last update Mon Jan 25 03:42:24 2016 Clément Roche
 //
 
 #include <iostream>
@@ -59,7 +59,10 @@ int	main(int ac, char **av) {
       // We write the header (just frequencies for each character on 4 bytes)
       for (auto i:freq) {
 	 int val = i;
-	 out.write((char *)&val, sizeof(val));
+	 //out.write((char *)&val, sizeof(val));
+
+	 // Stupid header
+	 out << val << std::endl;
       }
       // We reopen the input to encode
       in.open(av[1], std::ios::binary);
