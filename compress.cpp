@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Mon Jan 25 04:10:02 2016 Clément Roche
+// Last update Tue Jan 26 02:27:35 2016 Clément Roche
 //
 
 #include <iostream>
@@ -62,9 +62,11 @@ int	main(int ac, char **av) {
       // We write the header (just frequencies for each character on 4 bytes)
       for (auto i:freq) {
 	 int val = i;
+
+	 // Uncomment to get final header encoding
 	 //out.write((char *)&val, sizeof(val));
 
-	 // Stupid header
+	 // Checkpoint header
 	 out << val << std::endl;
       }
       // We reopen the input to encode

@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Tue Jan 26 02:23:47 2016 Clément Roche
+// Last update Tue Jan 26 02:27:58 2016 Clément Roche
 //
 
 #include <iostream>
@@ -51,12 +51,13 @@ int	main(int ac, char **av) {
       std::vector<int> freq(256, 0);
       int i = 0;
       while (i < 256) {
+	 // Uncomment to get final header decoding
 	 /*in.read((char *)&nextByte, sizeof(nextByte));
 	 if (nextByte) {
 	    freq[i] = nextByte;
 	    }*/
 
-	 // Stupid header
+	 // Checkpoint header
 	 int frequency;
 	 in >> frequency;
 	 if (frequency)
