@@ -5,13 +5,28 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:18:23 2016 Clément Roche
-// Last update Tue Jan 26 02:25:21 2016 Clément Roche
+// Last update Tue Jan 26 06:02:50 2016 Clément Roche
 //
 
 #include <queue>
 #include "HCTree.hpp"
 
 HCTree::~HCTree() {
+   if (root) {
+      deleteAllNodes(root);
+      root = 0;
+   }
+}
+
+
+// Recursive function to delete all nodes of the tree
+void	HCTree::deleteAllNodes(HCNode *node)
+{
+   if (!node)
+      return ;
+   deleteAllNodes(node->c0);
+   deleteAllNodes(node->c1);
+   delete node;
 }
 
 void HCTree::build(const vector<int> &freqs) {
@@ -38,7 +53,12 @@ void HCTree::build(const vector<int> &freqs) {
       HCNode *n = new HCNode(left->count + right->count, 0, left, right);
       queue.push(n);
    }
-   root = queue.top();
+   // special case one char
+   if (queue.top() && !queue.top()->c0 && !queue.top()->c1) {
+      root = new HCNode(queue.top()->count, 0, queue.top(), 0);
+   }
+   else
+      root = queue.top();
    assignParent(root);
 }
 
@@ -64,7 +84,7 @@ void HCTree::encode(byte symbol, ofstream &out) const {
    if (leaf) {
       std::string enc = "";
       getEncodedSymbol(enc, leaf);
-       out << enc;
+      out << enc;
    }
 }
 
@@ -87,7 +107,7 @@ void HCTree::getDecodedSymbol(int &dec, ifstream &in, HCNode *leaf) const {
       dec = leaf->symbol;
       return ;
    }
-   char nextChar;
+   char nextChar = 0;
    in.get(nextChar);
    if (nextChar == '0')
       getDecodedSymbol(dec, in, leaf->c0);

@@ -10,10 +10,10 @@ using namespace std;
 /** A class, instances of which are nodes in an HCTree.
  */
 class HCNode {
-   /*
+
    friend bool comp(HCNode* one, HCNode* other) {
       return one->count < other->count;
-      }*/
+   }
 
 public:
   int count;

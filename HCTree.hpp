@@ -34,6 +34,7 @@ private:
    void assignParent(HCNode *);
    void getEncodedSymbol(std::string &, HCNode *) const;
    void getDecodedSymbol(int &, ifstream &, HCNode *) const;
+   void deleteAllNodes(HCNode *);
 
 public:
     explicit HCTree() : root(0) {
