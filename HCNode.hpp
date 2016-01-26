@@ -34,6 +34,8 @@ public:
    *  And we want to break ties deterministically.
    */
    bool operator<(const HCNode& other) const {
+      if (count == other.count)
+	 return symbol < other.symbol;
       return count > other.count;
    }
 };

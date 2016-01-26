@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Mon Jan 25 04:11:24 2016 Clément Roche
+// Last update Tue Jan 26 02:23:47 2016 Clément Roche
 //
 
 #include <iostream>
@@ -63,7 +63,7 @@ int	main(int ac, char **av) {
 	    freq[i] = frequency;
 	 ++i;
       }
-      // \n
+      // \n at the end of the header
       in.get();
 
       // We build the tree

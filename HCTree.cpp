@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:18:23 2016 Clément Roche
-// Last update Mon Jan 25 03:29:44 2016 Clément Roche
+// Last update Tue Jan 26 02:25:21 2016 Clément Roche
 //
 
 #include <queue>
@@ -42,6 +42,7 @@ void HCTree::build(const vector<int> &freqs) {
    assignParent(root);
 }
 
+// Helper function to link the tree upward (assign parent pointers)
 void HCTree::assignParent(HCNode *node) {
    if (!node)
       return ;
@@ -63,10 +64,11 @@ void HCTree::encode(byte symbol, ofstream &out) const {
    if (leaf) {
       std::string enc = "";
       getEncodedSymbol(enc, leaf);
-      out << enc;
+       out << enc;
    }
 }
 
+// This is a recursive function that retrieve the code word for a byte
 void HCTree::getEncodedSymbol(std::string &enc, HCNode *leaf) const {
    if (!leaf)
       return ;
@@ -77,6 +79,7 @@ void HCTree::getEncodedSymbol(std::string &enc, HCNode *leaf) const {
       enc += "1";
 }
 
+// Recursive function that gets the symbol from an input stream
 void HCTree::getDecodedSymbol(int &dec, ifstream &in, HCNode *leaf) const {
    if (!leaf)
       return ;
