@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Tue Jan 26 02:27:58 2016 Clément Roche
+// Last update Thu Jan 28 23:19:46 2016 Clément Roche
 //
 
 #include <iostream>
@@ -28,10 +28,10 @@ static bool checkValidInputFile(std::ifstream &in, const char *out) {
       emptyout.close();
       return true;
    }
-   if (len < 512) {
+   /*if (len < 512) {
       std::cout << "The header is corrupted." << std::endl;
       return true;
-   }
+      }*/
    in.seekg(0, std::ios_base::beg);
    return false;
 }
@@ -47,25 +47,24 @@ int	main(int ac, char **av) {
       if (checkValidInputFile(in, av[2]))
 	 return -1;
 
-      //int nextByte;
+      int charcount = 0, headercount = 0;
+      in.read((char *)&headercount, sizeof(headercount));
+      in.read((char *)&charcount, sizeof(charcount));
+
+      std::cout << "headercount = " << headercount << " charcount = " << charcount << std::endl;
+
+      unsigned char c = 0;
+      int nextByte;
       std::vector<int> freq(256, 0);
       int i = 0;
-      while (i < 256) {
-	 // Uncomment to get final header decoding
-	 /*in.read((char *)&nextByte, sizeof(nextByte));
+      while (i < headercount) {
+	 in.read((char *)&c, sizeof(c));
+	 in.read((char *)&nextByte, sizeof(nextByte));
 	 if (nextByte) {
-	    freq[i] = nextByte;
-	    }*/
-
-	 // Checkpoint header
-	 int frequency;
-	 in >> frequency;
-	 if (frequency)
-	    freq[i] = frequency;
+	    freq[(int)c] = nextByte;
+	 }
 	 ++i;
       }
-      // \n at the end of the header
-      in.get();
 
       // We build the tree
       HCTree tree;
@@ -80,7 +79,11 @@ int	main(int ac, char **av) {
       }
 
       int decoded;
-      while ((decoded = tree.decode(in))) {
+      BitInputStream inbin(in);
+
+      while (charcount--) {
+	 decoded = tree.decode(inbin);
+	 //std::cout << "decoded " << decoded << " = " << (char)decoded << std::endl;
 	 out << (char)decoded;
       }
       in.close();

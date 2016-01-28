@@ -5,15 +5,29 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sat Jan 23 21:58:56 2016 Clément Roche
-// Last update Sun Jan 24 04:22:35 2016 Clément Roche
+// Last update Thu Jan 28 23:14:28 2016 Clément Roche
 //
 
+#include <iostream>
+
 class BitInputStream {
+private:
+   std::istream &in;
+   char buf;
+   int nbits;
+   bool eof;
 
 public:
-   BitInputStream() {
+   BitInputStream(std::istream &is) : in(is), buf(0), nbits(0), eof(false) {
+      in.get(buf);
+      //std::cout << "first input " << (int)buf << std::endl;
+      if (!buf)
+	 eof = true;
    }
 
    ~BitInputStream() {
    }
+
+   int readBit();
+   bool end() const;
 };

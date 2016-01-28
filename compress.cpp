@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Tue Jan 26 06:02:55 2016 Clément Roche
+// Last update Thu Jan 28 23:20:49 2016 Clément Roche
 //
 
 #include <iostream>
@@ -45,8 +45,10 @@ int	main(int ac, char **av) {
 
       char nextChar;
       std::vector<int> freq(256, 0);
+      int charcount = 0;
       while (in.get(nextChar)) {
 	 ++freq[(int)nextChar];
+	 ++charcount;
       }
       in.close();
 
@@ -59,23 +61,34 @@ int	main(int ac, char **av) {
 	 std::cout << "Invalid output file." << std::endl;
 	 return -1;
       }
-      // We write the header (just frequencies for each character on 4 bytes)
+      int headercount = 0;
       for (auto i:freq) {
-	 int val = i;
+	 if (i)
+	    ++headercount;
+      }
+      // We write the size of header an number of characters
+      out.write((char *)&headercount, sizeof(headercount));
+      out.write((char *)&charcount, sizeof(charcount));
 
-	 // Uncomment to get final header encoding
-	 //out.write((char *)&val, sizeof(val));
-
-	 // Checkpoint header
-	 out << val << std::endl;
+      // We write the header (just frequencies for each character on 4 bytes)
+      for (int i = 0; i < 256; i++) {
+	 if (freq[i]) {
+	    int val = freq[i];
+	    unsigned char c = (unsigned char)i;
+	    out.write((char *)&c, sizeof(c));
+	    out.write((char *)&val, sizeof(val));
+	 }
       }
       // We reopen the input to encode
       in.open(av[1], std::ios::binary);
       if (checkValidInputFile(in))
 	 return -1;
+      BitOutputStream outbin(out);
       while (in.get(nextChar)) {
-	 tree.encode((byte) nextChar, out);
+	 tree.encode((byte) nextChar, outbin);
+	 //tree.encode((byte) nextChar, out);
       }
+      outbin.flush();
       out.close();
       in.close();
    }

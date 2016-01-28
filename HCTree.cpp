@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:18:23 2016 Clément Roche
-// Last update Tue Jan 26 06:02:50 2016 Clément Roche
+// Last update Thu Jan 28 23:21:03 2016 Clément Roche
 //
 
 #include <queue>
@@ -77,6 +77,17 @@ void HCTree::assignParent(HCNode *node) {
 }
 
 void HCTree::encode(byte symbol, BitOutputStream &out) const {
+   HCNode *leaf = leaves[(int)symbol];
+   if (leaf) {
+      std::string enc = "";
+      getEncodedSymbol(enc, leaf);
+      for (auto c:enc) {
+	 if (c == '1')
+	    out.writeBit(1);
+	 else
+	    out.writeBit(0);
+      }
+   }
 }
 
 void HCTree::encode(byte symbol, ofstream &out) const {
@@ -116,6 +127,29 @@ void HCTree::getDecodedSymbol(int &dec, ifstream &in, HCNode *leaf) const {
 }
 
 int HCTree::decode(ifstream &in) const {
+   int dec = 0;
+   getDecodedSymbol(dec, in, root);
+   return dec;
+}
+
+void HCTree::getDecodedSymbol(int &dec, BitInputStream &in, HCNode *leaf) const {
+   if (!leaf)
+      return ;
+   if (!leaf->c0 && !leaf->c1) {
+      dec = leaf->symbol;
+      return ;
+   }
+   int nextBit = in.readBit();
+   std::cout << "read bit " << nextBit << std::endl;
+   if (nextBit == 0)
+      getDecodedSymbol(dec, in, leaf->c0);
+   else if (nextBit == 1)
+      getDecodedSymbol(dec, in, leaf->c1);
+}
+
+int HCTree::decode(BitInputStream &in) const {
+   if (in.end())
+      return 0;
    int dec = 0;
    getDecodedSymbol(dec, in, root);
    return dec;
