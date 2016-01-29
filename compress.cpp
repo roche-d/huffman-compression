@@ -5,13 +5,14 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:40:36 2016 Clément Roche
-// Last update Thu Jan 28 23:20:49 2016 Clément Roche
+// Last update Fri Jan 29 01:43:26 2016 Clément Roche
 //
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
+#include <map>
 #include "HCTree.hpp"
 
 static bool checkValidInputFile(std::ifstream &in, const char *out = 0) {
@@ -47,10 +48,12 @@ int	main(int ac, char **av) {
       std::vector<int> freq(256, 0);
       int charcount = 0;
       while (in.get(nextChar)) {
-	 ++freq[(int)nextChar];
+	 int nextIndex = (int)nextChar + 128;
+	 ++freq[nextIndex];
 	 ++charcount;
       }
       in.close();
+
 
       HCTree tree;
       tree.build(freq);
@@ -85,8 +88,7 @@ int	main(int ac, char **av) {
 	 return -1;
       BitOutputStream outbin(out);
       while (in.get(nextChar)) {
-	 tree.encode((byte) nextChar, outbin);
-	 //tree.encode((byte) nextChar, out);
+	 tree.encode((byte) nextChar + 128, outbin);
       }
       outbin.flush();
       out.close();

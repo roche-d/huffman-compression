@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:18:23 2016 Clément Roche
-// Last update Thu Jan 28 23:21:03 2016 Clément Roche
+// Last update Fri Jan 29 02:41:40 2016 Clément Roche
 //
 
 #include <queue>
@@ -76,13 +76,14 @@ void HCTree::assignParent(HCNode *node) {
    }
 }
 
+// Encode a symbol to a BitOutputStream
 void HCTree::encode(byte symbol, BitOutputStream &out) const {
    HCNode *leaf = leaves[(int)symbol];
    if (leaf) {
-      std::string enc = "";
+      std::vector<bool> enc;
       getEncodedSymbol(enc, leaf);
       for (auto c:enc) {
-	 if (c == '1')
+	 if (c)
 	    out.writeBit(1);
 	 else
 	    out.writeBit(0);
@@ -90,24 +91,33 @@ void HCTree::encode(byte symbol, BitOutputStream &out) const {
    }
 }
 
+// Encode a symbol to an ofstream
 void HCTree::encode(byte symbol, ofstream &out) const {
    HCNode *leaf = leaves[(int)symbol];
    if (leaf) {
-      std::string enc = "";
+      std::string encstring = "";
+      std::vector<bool> enc;
       getEncodedSymbol(enc, leaf);
-      out << enc;
+      for (auto c:enc) {
+	 if (c)
+	    encstring += "1";
+	 else
+	    encstring += "0";
+      }
+      out << encstring;
    }
 }
 
+
 // This is a recursive function that retrieve the code word for a byte
-void HCTree::getEncodedSymbol(std::string &enc, HCNode *leaf) const {
+void HCTree::getEncodedSymbol(std::vector<bool> &enc, HCNode *leaf) const {
    if (!leaf)
       return ;
    getEncodedSymbol(enc, leaf->p);
    if (leaf->p && leaf->p->c0 == leaf)
-      enc += "0";
+      enc.push_back(false);
    else if (leaf->p && leaf->p->c1 == leaf)
-      enc += "1";
+      enc.push_back(true);
 }
 
 // Recursive function that gets the symbol from an input stream
@@ -132,6 +142,7 @@ int HCTree::decode(ifstream &in) const {
    return dec;
 }
 
+// Decode a symbol from a BitInputStream
 void HCTree::getDecodedSymbol(int &dec, BitInputStream &in, HCNode *leaf) const {
    if (!leaf)
       return ;
@@ -140,7 +151,6 @@ void HCTree::getDecodedSymbol(int &dec, BitInputStream &in, HCNode *leaf) const 
       return ;
    }
    int nextBit = in.readBit();
-   std::cout << "read bit " << nextBit << std::endl;
    if (nextBit == 0)
       getDecodedSymbol(dec, in, leaf->c0);
    else if (nextBit == 1)
@@ -148,8 +158,6 @@ void HCTree::getDecodedSymbol(int &dec, BitInputStream &in, HCNode *leaf) const 
 }
 
 int HCTree::decode(BitInputStream &in) const {
-   if (in.end())
-      return 0;
    int dec = 0;
    getDecodedSymbol(dec, in, root);
    return dec;

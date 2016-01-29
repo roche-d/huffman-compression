@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Thu Jan 28 23:19:46 2016 Clément Roche
+// Last update Fri Jan 29 03:05:13 2016 Clément Roche
 //
 
 #include <iostream>
@@ -28,10 +28,10 @@ static bool checkValidInputFile(std::ifstream &in, const char *out) {
       emptyout.close();
       return true;
    }
-   /*if (len < 512) {
+   if (len < 8) {
       std::cout << "The header is corrupted." << std::endl;
       return true;
-      }*/
+   }
    in.seekg(0, std::ios_base::beg);
    return false;
 }
@@ -47,12 +47,12 @@ int	main(int ac, char **av) {
       if (checkValidInputFile(in, av[2]))
 	 return -1;
 
+      // We read the values of the size of the header and the size of compressed content
       int charcount = 0, headercount = 0;
       in.read((char *)&headercount, sizeof(headercount));
       in.read((char *)&charcount, sizeof(charcount));
 
-      std::cout << "headercount = " << headercount << " charcount = " << charcount << std::endl;
-
+      // We parse the header
       unsigned char c = 0;
       int nextByte;
       std::vector<int> freq(256, 0);
@@ -83,8 +83,7 @@ int	main(int ac, char **av) {
 
       while (charcount--) {
 	 decoded = tree.decode(inbin);
-	 //std::cout << "decoded " << decoded << " = " << (char)decoded << std::endl;
-	 out << (char)decoded;
+	 out << (char)(decoded - 128);
       }
       in.close();
       out.close();

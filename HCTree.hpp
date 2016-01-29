@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <fstream>
+#include <stack>
 #include "HCNode.hpp"
 #include "BitInputStream.hpp"
 #include "BitOutputStream.hpp"
@@ -33,8 +34,9 @@ private:
 
    void assignParent(HCNode *);
    void getEncodedSymbol(std::string &, HCNode *) const;
+void getEncodedSymbol(std::vector<bool> &, HCNode *) const;
    void getDecodedSymbol(int &, ifstream &, HCNode *) const;
-  void getDecodedSymbol(int &, BitInputStream &, HCNode *) const;
+   void getDecodedSymbol(int &, BitInputStream &, HCNode *) const;
    void deleteAllNodes(HCNode *);
 
 public:
