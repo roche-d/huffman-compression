@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Mon Jan 25 02:48:04 2016 Clément Roche
-// Last update Fri Jan 29 03:05:13 2016 Clément Roche
+// Last update Fri Jan 29 03:30:12 2016 Clément Roche
 //
 
 #include <iostream>
@@ -36,6 +36,26 @@ static bool checkValidInputFile(std::ifstream &in, const char *out) {
    return false;
 }
 
+// Function that reads and parse the header used to build the tree
+static void parseHeader(std::vector<int> &freq, std::ifstream &in, int &charcount) {
+   // We read the values of the size of the header and the size of compressed content
+   int headercount = 0;
+   in.read((char *)&headercount, sizeof(headercount));
+   in.read((char *)&charcount, sizeof(charcount));
+
+   // We parse the header
+   unsigned char c = 0;
+   int nextByte;
+   for (int i = 0; i < headercount; i++) {
+      in.read((char *)&c, sizeof(c));
+      in.read((char *)&nextByte, sizeof(nextByte));
+      if (nextByte) {
+	 freq[(int)c] = nextByte;
+      }
+   }
+
+}
+
 int	main(int ac, char **av) {
    if (ac < 3)
       std::cout << "Usage: ./uncompress infile outfile" << std::endl;
@@ -47,24 +67,11 @@ int	main(int ac, char **av) {
       if (checkValidInputFile(in, av[2]))
 	 return -1;
 
-      // We read the values of the size of the header and the size of compressed content
-      int charcount = 0, headercount = 0;
-      in.read((char *)&headercount, sizeof(headercount));
-      in.read((char *)&charcount, sizeof(charcount));
+      int charcount = 0;
+      std::vector<int> freq(256, 0);
 
       // We parse the header
-      unsigned char c = 0;
-      int nextByte;
-      std::vector<int> freq(256, 0);
-      int i = 0;
-      while (i < headercount) {
-	 in.read((char *)&c, sizeof(c));
-	 in.read((char *)&nextByte, sizeof(nextByte));
-	 if (nextByte) {
-	    freq[(int)c] = nextByte;
-	 }
-	 ++i;
-      }
+      parseHeader(freq, in, charcount);
 
       // We build the tree
       HCTree tree;
@@ -78,6 +85,7 @@ int	main(int ac, char **av) {
 	 return -1;
       }
 
+      // We finally write back the file
       int decoded;
       BitInputStream inbin(in);
 

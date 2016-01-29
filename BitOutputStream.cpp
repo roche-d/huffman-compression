@@ -5,7 +5,7 @@
 // Login   <roche_d@epitech.net>
 // 
 // Started on  Sun Jan 24 04:42:03 2016 Clément Roche
-// Last update Thu Jan 28 23:20:15 2016 Clément Roche
+// Last update Fri Jan 29 03:11:23 2016 Clément Roche
 //
 
 #include "BitOutputStream.hpp"
@@ -15,15 +15,6 @@ void BitOutputStream::flush() {
    out.flush();
    buf = 0;
    nbits = 0;
-}
-
-static void debug_byte(char c) {
-   std::cout << "debug" << std::endl;
-   for (int i =0; i < 8; i++) {
-      int v = c >> (7 - i);
-      std::cout << (v & 1);
-   }
-   std::cout << std::endl;
 }
 
 void BitOutputStream::writeBit(int i) {
